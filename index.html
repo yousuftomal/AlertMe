@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert Posting Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Authentication Section -->
+        <div id="auth-section">
+            <h2>Sign Up</h2>
+            <form id="sign-up-form">
+                <input type="text" id="sign-up-name" placeholder="Full Name" required>
+                <input type="email" id="sign-up-email" placeholder="Email" required>
+                <input type="tel" id="sign-up-phone" placeholder="Phone" required>
+                <input type="password" id="sign-up-password" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+
+            <h2>Login</h2>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+
+        <!-- Alert Posting Section -->
+        <div id="alerts-section" style="display: none;">
+            <h2>Post an Alert</h2>
+            <form id="post-alert-form">
+                <textarea id="alert-message" placeholder="Type your alert message here..." required></textarea>
+                <button type="submit">Post Alert</button>
+            </form>
+
+            <h2>Recent Alerts</h2>
+            <div id="alerts-list"></div>
+        </div>
+    </div>
+
+    <!-- Include Supabase SDK -->
+    <script src="https://unpkg.com/@supabase/supabase-js"></script>
+
+    <!-- Firebase Configuration and App Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
