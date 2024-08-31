@@ -1,18 +1,28 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #fff;
-    color: #000;
+    background-color: white;
+    color: black;
     margin: 0;
     padding: 0;
 }
 
 #app {
-    width: 80%;
-    margin: auto;
+    max-width: 800px;
+    margin: 0 auto;
     padding: 20px;
 }
 
-form {
+#auth-section, #alerts-section {
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: venetianred;
+    border-bottom: 2px solid venetianred;
+    padding-bottom: 10px;
     margin-bottom: 20px;
 }
 
@@ -21,20 +31,78 @@ input, textarea {
     width: 100%;
     margin-bottom: 10px;
     padding: 10px;
+    border: 1px solid black;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
 button {
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: #fff;
+    background-color: venetianred;
+    color: white;
     border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
     cursor: pointer;
+    font-size: 16px;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: darkred;
 }
 
 #alerts-list {
     margin-top: 20px;
+}
+
+.alert {
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+.alert p {
+    margin: 0 0 10px;
+}
+
+button.verify, button.discard {
+    margin-right: 10px;
+}
+
+button.verify {
+    background-color: green;
+}
+
+button.verify:hover {
+    background-color: darkgreen;
+}
+
+button.discard {
+    background-color: red;
+}
+
+button.discard:hover {
+    background-color: darkred;
+}
+
+#notification-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: venetianred;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+#notification-button:hover {
+    background-color: darkred;
 }
