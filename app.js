@@ -1,3 +1,5 @@
+console.log("App initialized");
+
 // Utility functions
 function showError(message) {
     alert(message);
@@ -9,7 +11,23 @@ function showSuccess(message) {
     console.log(message);
 }
 
+// New function to receive location from Android
+window.receiveLocationFromAndroid = function(locationData) {
+    console.log("Received location from Android:", locationData);
+    updateUserLocation(locationData);
+};
+
+// New function to update user location
+function updateUserLocation(location) {
+    window.userLocation = location;
+    console.log("User location updated:", window.userLocation);
+}
+
 async function getLocation() {
+    if (window.userLocation) {
+        return Promise.resolve(window.userLocation);
+    }
+    
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
             reject('Geolocation is not supported by this browser.');
@@ -22,7 +40,6 @@ async function getLocation() {
         );
     });
 }
-
 
 function isWithinRadius(userLocation, alertLocation, radius) {
     const R = 6371; // Radius of the Earth in kilometers
@@ -47,9 +64,7 @@ async function getCurrentUser() {
         const { data: { user }, error } = await supabase.auth.getUser();
         if (error) throw error;
 
-        // Log the entire user object to debug
-        console.log('User Object:', user);
-
+        console.log('Current user:', user);
         return user;
     } catch (error) {
         showError(`Failed to get current user: ${error.message}`);
@@ -115,6 +130,7 @@ async function postAlert(message) {
         if (!user) throw new Error('User not authenticated');
 
         const location = await getLocation();
+        console.log("Posting alert:", message, "at location:", location);
 
         // Fetch the user name from the users table using user_id
         const { data: userData, error: userError } = await supabase
@@ -165,6 +181,8 @@ async function loadAlerts() {
         const alertsList = document.getElementById('alerts-list');
         alertsList.innerHTML = '';
 
+        console.log("Loaded alerts:", alerts);
+
         // Iterate over each alert and format the output
         alerts.forEach(alert => {
             const alertLocation = alert.location.replace('POINT(', '').replace(')', '').split(' ');
@@ -173,18 +191,17 @@ async function loadAlerts() {
                 alertElement.className = 'alert-post';
 
                 alertElement.innerHTML = `
-                    
-                        <div class="alert-name">${alert.name}</div>
-                        <div class="alert-location">LAT: ${alertLocation[0]}, LONG: ${alertLocation[1]}</div>
-                        <div class="alert-message">${alert.message}</div>
-                        <div class="alert-timestamp">${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</div>
-                        <div class="alert-votes">
-                            True: ${alert.verified_votes} | Fake: ${alert.discard_votes}                        </div>
-                        <div class="alert-actions">
-                            <button onclick="vote('${alert.id}', 'verify')">True</button>
-                            <button onclick="vote('${alert.id}', 'discard')">Fake</button>
-                        </div>
-                    
+                    <div class="alert-name">${alert.name}</div>
+                    <div class="alert-location">LAT: ${alertLocation[0]}, LONG: ${alertLocation[1]}</div>
+                    <div class="alert-message">${alert.message}</div>
+                    <div class="alert-timestamp">${new Date(alert.timestamp).toLocaleDateString()} ${new Date(alert.timestamp).toLocaleTimeString()}</div>
+                    <div class="alert-votes">
+                        True: ${alert.verified_votes} | Fake: ${alert.discard_votes}
+                    </div>
+                    <div class="alert-actions">
+                        <button onclick="vote('${alert.id}', 'verify')">True</button>
+                        <button onclick="vote('${alert.id}', 'discard')">Fake</button>
+                    </div>
                 `;
 
                 alertsList.appendChild(alertElement);
@@ -229,8 +246,8 @@ async function vote(alertId, voteType) {
 
             await supabase.from('alerts').update(updatedVotes).eq('id', alertId);
 
-            
             await loadAlerts();
+            showSuccess('Vote recorded successfully!');
         } else {
             showError('You have already voted on this alert.');
         }
@@ -239,7 +256,6 @@ async function vote(alertId, voteType) {
         showError(`Failed to record vote: ${error.message}`);
     }
 }
-
 
 // Event Listeners
 document.getElementById('sign-up-form').addEventListener('submit', async (e) => {
@@ -300,4 +316,5 @@ async function initApp() {
     }
 }
 
-initApp();
+// Call initApp when the page loads
+window.addEventListener('load', initApp);
