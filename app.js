@@ -1,10 +1,10 @@
 // Utility functions
 function showError(message) {
-    // Error handling removed
+    alert(`Error: ${message}`);
 }
 
 function showSuccess(message) {
-    // Success message removed
+    alert(`Success: ${message}`);
 }
 
 // Authentication functions
@@ -14,7 +14,7 @@ async function getCurrentUser() {
         if (error) throw error;
         return user;
     } catch (error) {
-        // Error handling removed
+        showError(error.message);
         return null;
     }
 }
@@ -33,13 +33,15 @@ async function signUp(name, email, phone, password) {
         const { error: insertError } = await supabase.from('users').upsert({
             id: user.id,
             full_name: name,
-            email: email
+            email: email,
+            phone: phone
         });
         if (insertError) throw insertError;
 
+        showSuccess('Sign-up successful. Please check your email for confirmation.');
         return true;
     } catch (error) {
-        // Error handling removed
+        showError(error.message);
         return false;
     }
 }
@@ -54,7 +56,7 @@ async function login(email, password) {
 
         return true;
     } catch (error) {
-        // Error handling removed
+        showError(error.message);
         return false;
     }
 }
@@ -75,7 +77,7 @@ async function postAlert(message) {
 
         const userName = userData ? userData.full_name : 'Unknown';
 
-        const { data, error } = await supabase.from('alerts').insert({
+        const { error: insertError } = await supabase.from('alerts').insert({
             user_id: user.id,
             name: userName,
             message: message,
@@ -85,11 +87,12 @@ async function postAlert(message) {
             comments_count: 0
         });
 
-        if (error) throw error;
+        if (insertError) throw insertError;
 
+        showSuccess('Alert posted successfully.');
         return true;
     } catch (error) {
-        // Error handling removed
+        showError(error.message);
         return false;
     }
 }
@@ -127,7 +130,7 @@ async function loadAlerts() {
             alertsList.appendChild(alertElement);
         });
     } catch (error) {
-        // Error handling removed
+        showError(error.message);
     }
 }
 
@@ -146,6 +149,7 @@ async function vote(alertId, voteType) {
 
         if (voteError) throw voteError;
         if (existingVote.length > 0) {
+            showError('You have already voted on this alert.');
             return;
         }
 
@@ -176,9 +180,10 @@ async function vote(alertId, voteType) {
 
         if (updateError) throw updateError;
 
+        showSuccess('Vote recorded.');
         await loadAlerts();
     } catch (error) {
-        // Error handling removed
+        showError(error.message);
     }
 }
 
@@ -191,57 +196,13 @@ function redirectToPost(alertId) {
 function sharePost(alertId) {
     const postUrl = `${window.location.origin}/post.html?alertId=${alertId}`;
     navigator.clipboard.writeText(postUrl).then(() => {
-        // Success message removed
-    }).catch(error => {
-        // Error handling removed
+        showSuccess('Post URL copied to clipboard.');
+    }).catch(err => {
+        showError('Failed to copy URL.');
     });
 }
 
-// Initialize the app
-async function initApp() {
-    try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        if (error || !user) {
-            document.getElementById('auth-section').style.display = 'block';
-            document.getElementById('alerts-section').style.display = 'none';
-        } else {
-            document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('alerts-section').style.display = 'block';
-            await loadAlerts();
-        }
-    } catch (error) {
-        // Error handling removed
-    }
-}
-
-// Event Listeners
-document.getElementById('login-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    await login(email, password);
-    await initApp();
-});
-
-document.getElementById('sign-up-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const name = document.getElementById('sign-up-name').value;
-    const email = document.getElementById('sign-up-email').value;
-    const phone = document.getElementById('sign-up-phone').value;
-    const password = document.getElementById('sign-up-password').value;
-    await signUp(name, email, phone, password);
-    await initApp();
-});
-
-document.getElementById('post-alert-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const message = document.getElementById('alert-message').value;
-    await postAlert(message);
-    await loadAlerts();
-    document.getElementById('alert-message').value = '';
-});
-
-// Event Listeners for "Create an account" and "Back to Login" buttons
+// Form handling
 document.getElementById('create-account-button').addEventListener('click', () => {
     document.getElementById('login-page').style.display = 'none';
     document.getElementById('sign-up-page').style.display = 'block';
@@ -252,6 +213,37 @@ document.getElementById('back-to-login-button').addEventListener('click', () => 
     document.getElementById('login-page').style.display = 'block';
 });
 
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const success = await login(email, password);
+    if (success) {
+        document.getElementById('auth-section').style.display = 'none';
+        document.getElementById('alerts-section').style.display = 'block';
+        await loadAlerts();
+    }
+});
 
-// Initialize on load
-window.addEventListener('load', initApp);
+document.getElementById('sign-up-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('sign-up-name').value;
+    const email = document.getElementById('sign-up-email').value;
+    const phone = document.getElementById('sign-up-phone').value;
+    const password = document.getElementById('sign-up-password').value;
+    const success = await signUp(name, email, phone, password);
+    if (success) {
+        document.getElementById('sign-up-page').style.display = 'none';
+        document.getElementById('login-page').style.display = 'block';
+    }
+});
+
+document.getElementById('post-alert-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = document.getElementById('alert-message').value;
+    const success = await postAlert(message);
+    if (success) {
+        document.getElementById('alert-message').value = '';
+        await loadAlerts();
+    }
+});
