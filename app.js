@@ -33,7 +33,6 @@ async function signUp(name, email, phone, password) {
         const { error: insertError } = await supabase.from('users').upsert({
             id: user.id,
             full_name: name,
-            phone: phone,
             email: email
         });
         if (insertError) throw insertError;
@@ -241,6 +240,18 @@ document.getElementById('post-alert-form').addEventListener('submit', async (eve
     await loadAlerts();
     document.getElementById('alert-message').value = '';
 });
+
+// Event Listeners for "Create an account" and "Back to Login" buttons
+document.getElementById('create-account-button').addEventListener('click', () => {
+    document.getElementById('login-page').style.display = 'none';
+    document.getElementById('sign-up-page').style.display = 'block';
+});
+
+document.getElementById('back-to-login-button').addEventListener('click', () => {
+    document.getElementById('sign-up-page').style.display = 'none';
+    document.getElementById('login-page').style.display = 'block';
+});
+
 
 // Initialize on load
 window.addEventListener('load', initApp);
