@@ -247,3 +247,25 @@ document.getElementById('post-alert-form').addEventListener('submit', async (e) 
         await loadAlerts();
     }
 });
+
+// Check session on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const { data: session, error } = await supabase.auth.getSession();
+        if (error) throw error;
+
+        const user = session.session ? session.session.user : null;
+
+        if (!user) {
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('alerts-section').style.display = 'none';
+        } else {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('alerts-section').style.display = 'block';
+            await loadAlerts();
+        }
+    } catch (error) {
+        showError('Failed to load session.');
+    }
+});
+
