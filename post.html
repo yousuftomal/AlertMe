@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Details</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://oacwydxlrrctxmavodmt.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hY3d5ZHhscnJjdHhtYXZvZG10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjUwNTY5NDgsImV4cCI6MjA0MDYzMjk0OH0.tHHtD_AbhMJAI6KtfIQJWHIU7w7gLrlQPCX_56kAVXI'; // Replace with your Supabase key
+        window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    </script>
+</head>
+<body>
+        <h1>⚠️LERT ME</h1>
+    
+
+    <div id="app">
+        <div id="post-details"></div>
+
+
+        <form id="comment-form">
+            <textarea id="comment-text" placeholder="Type your comment here..." required></textarea>
+            <button type="submit">Comment</button>
+        </form>
+        
+        <h3>Comments</h3>
+        <div id="comments-list"></div>
+
+        <!-- Input box moved to the bottom -->
+        
+    </div>
+
+    <script src="post.js"></script>
+</body>
+</html>

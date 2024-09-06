@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alert Posting Website</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Include Supabase SDK -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-        // Initialize Supabase client
         const supabaseUrl = 'https://oacwydxlrrctxmavodmt.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hY3d5ZHhscnJjdHhtYXZvZG10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjUwNTY5NDgsImV4cCI6MjA0MDYzMjk0OH0.tHHtD_AbhMJAI6KtfIQJWHIU7w7gLrlQPCX_56kAVXI'; // Replace with your Supabase key
         window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
-        console.log('Supabase initialized:', window.supabase); // Verify initialization
     </script>
 </head>
 <body>
@@ -40,6 +37,7 @@
                     <input type="password" id="sign-up-password" placeholder="Password" required>
                     <button type="submit">Sign Up</button>
                 </form>
+                <p>Check email for Authentication Link. Click that and Come Back to Log in.</p>
                 <button id="back-to-login-button">Back to Login</button>
             </div>
         </div>
